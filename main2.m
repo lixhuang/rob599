@@ -6,18 +6,12 @@
 br = TestTrack.br;
 bl = TestTrack.bl;
 bc = TestTrack.cline;
-tv = bc(:,end)-bc(:,end-1);
-bc2 = bc;
-for i = 1:150
-    tbc = bc2(:,end)+tv;
-    bc2 = [bc2,tbc];
-end
 b_theta = TestTrack.theta;
 
 T_STEP = 0.1;
 SIM_STEP = 0.01;
 C_STEP = 0.2;
-T_LENGTH = 90;
+T_LENGTH = 70;
 HORIZON_STEP = 50;
 U1_SCALE = 30;
 U2_SCALE = 0.00005;
@@ -41,7 +35,6 @@ x_init = [287; 5; -176; 0; 2; 0];
 %x_init = [253.5; 10; -94; 0; 1.9; 0];
 %x_init = [562.55;14.51;316.84;-2.09;1.01;0.24];
 %x_init = [878.343380813432;24.6901208124630;458.223577742850;-0.885645635966873;0.836579999546011;0.114723547684054];
-x_init = [1158.20246078656;36.3882592898024;491.024703989237;-0.926198515281967;0.285013275433445;0.0100445678163843]
 lb = ones([HORIZON_STEP*2,1]); 
 lb(1:2:end) = lb(1:2:end)*-0.5*U1_SCALE;
 lb(2:2:end) = lb(2:2:end)*-10000*U2_SCALE;
@@ -54,7 +47,6 @@ id = 1;
 %id = 7;
 %id = 69;
 %id = 140;
-id = 189
 u = ones([HORIZON_STEP*2,1]);
 u(1:2:end) = u(1:2:end)*0*U1_SCALE;
 u(2:2:end) = u(2:2:end)*100*U2_SCALE;
@@ -67,11 +59,11 @@ for t = 0:SIM_STEP:T_LENGTH
     
     %% prepare initial guess
     %x0 = x;
-    prox_len =100;
+    prox_len =60;
     param.x0 = x;
     param.prox_len =prox_len;
-    param.bc = bc2(:,id:id+prox_len-1);
-    %param.theta = b_theta(:,id:id+prox_len-1);
+    param.bc = bc(:,id:id+prox_len-1);
+    param.theta = b_theta(:,id:id+prox_len-1);
     u0 = [u(3:end);u(end-1:end)];
     
     %px = bc(1,id:id+prox_len-1)-bc(1,id-1);
@@ -131,11 +123,11 @@ for t = 0:SIM_STEP:T_LENGTH
     
     %% evolve system and found nearset point
     u_log = [u_log,[u(1)/U1_SCALE;u(2)/U2_SCALE]];
-    if(length(u_log)==1)
-        x = f_car(x,[u(1)/U1_SCALE;u(2)/U2_SCALE], SIM_STEP);
+    if t==0
+        x=f_car(x,[u(1)/U1_SCALE;u(2)/U2_SCALE], SIM_STEP);
     else
-        x = odefun(x_init,u_log);
-    end
+    x =odefun(t,x,u_log);  
+    end%
     d = inf;
     for i = id:id+10
         if(i>length(bc))

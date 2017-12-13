@@ -11,11 +11,11 @@ function [c,ceq] = nonlcon(u,param)
     u(2:2:end) = u(2:2:end)/param.U2_SCALE;
     
     d_vec = zeros([param.len,1]);
-    theta_vec = zeros([param.len,1]);
+    %theta_vec = zeros([param.len,1]);
     
     x = param.x0;
     bc = param.bc;
-    b_theta = param.theta;
+    %b_theta = param.theta;
     prox_len = param.prox_len;
     
     x_log = zeros([6,HORIZON_STEP]);
@@ -53,7 +53,7 @@ function [c,ceq] = nonlcon(u,param)
         d = v2'*v2-(v1'*v2)^2/(v1'*v1);
         
         d_vec(uid) = (sqrt(d)-11.5/2)^1;
-        theta_vec(uid) = wrapToPi(x(5) - (b_theta(id) + b_theta(id-1))/2);
+        %theta_vec(uid) = wrapToPi(x(5) - (b_theta(id) + b_theta(id-1))/2);
         
         it = it+1;
     end
