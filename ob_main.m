@@ -13,18 +13,16 @@ SIM_STEP = 0.01;
 C_STEP = 0.2;
 T_LENGTH = 70;
 HORIZON_STEP = 50;
-U1_SCALE = 30;
-U2_SCALE = 0.00005;
 
 a_max = 10;
-kp_d = 1;
-ki_d = 1;
-kd_d = 1;
+kp_d = 10;
+ki_d = 0;
+kd_d = 0;
 e_dis_sum = 0;
 e_dis_past = 0;
-kp_v = 1;
-ki_v = 1;
-kd_v = 1;
+kp_v = 100;
+ki_v = 0;
+kd_v = 0;
 e_v_sum = 0;
 e_v_past = 0;
 
@@ -95,8 +93,19 @@ for t = 0:SIM_STEP:T_LENGTH
     
     
     %% evolve system and found nearset point
-    u_log = [u_log,[u(1)/U1_SCALE;u(2)/U2_SCALE]];
-    x = f_car(x,[u(1)/U1_SCALE;u(2)/U2_SCALE], SIM_STEP);
+    u_log = [u_log,[u(1);u(2)]];
+    if (t>0 && floor(t)*100==t*100)
+        x = odefun(x_init,u_log);
+        clf;
+        hold on
+        plot(x_log(1,:),x_log(3,:),'r');
+        plot(br(1,:),br(2,:),'k');
+        plot(bl(1,:),bl(2,:),'k');
+        plot(bc(1,:),bc(2,:),'b');
+        drawnow;
+    else
+        x=f_car(x,[u(1);u(2)], SIM_STEP);
+    end
     
     q = [x(1);x(3)];
     d = inf;
@@ -116,10 +125,11 @@ for t = 0:SIM_STEP:T_LENGTH
         id = id + 1;
     end
     
+    t
     %d_max_debug = max(c)
 end
 
 plot(x_log(1,:),x_log(3,:));
 plot(br(1,:),br(2,:),'k');
-plot(bl(1,:),bk(2,:),'k');
+plot(bl(1,:),bl(2,:),'k');
 plot(bc(1,:),bc(2,:),'b');
