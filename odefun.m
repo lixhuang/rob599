@@ -1,4 +1,4 @@
-function X = odefun(t,x0,U_log)
+function X = odefun(x0,U_log)
 W = 13720 ;
 Nw = 2 ;
 f = 0.01 ;
@@ -12,7 +12,6 @@ Ey = -1.6 ;
 Shy = 0 ;
 Svy = 0 ;
 m = 1400 ;
- x0 = [287,5,-176,0,2,0] ;
 U=U_log';
 % generate input functions
 
