@@ -126,8 +126,8 @@ for t = 0:SIM_STEP:T_LENGTH
     if t==0
         x=f_car(x,[u(1)/U1_SCALE;u(2)/U2_SCALE], SIM_STEP);
     else
-        x =odefun(t,x,u_log);  
-    end
+    x =odefun(t,x,u_log);  
+    end%
     d = inf;
     for i = id:id+10
         if(i>length(bc))
