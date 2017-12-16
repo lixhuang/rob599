@@ -52,7 +52,7 @@ function [c,ceq] = nonlcon(u,param)
         v2 = q - bc(:,id-1);
         d = v2'*v2-(v1'*v2)^2/(v1'*v1);
         
-        d_vec(uid) = (sqrt(d)-11.5/2)^1;
+        d_vec(uid) = (sqrt(d)-11/2)^1;
         %theta_vec(uid) = wrapToPi(x(5) - (b_theta(id) + b_theta(id-1))/2);
         
         it = it+1;
