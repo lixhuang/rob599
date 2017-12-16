@@ -11,13 +11,15 @@ b_theta = TestTrack.theta;
 T_STEP = 0.1;
 SIM_STEP = 0.01;
 C_STEP = 0.2;
-T_LENGTH = 8;
+T_LENGTH = 25;
 HORIZON = 2;
 
-a_max = 2;
-kp_d = 0.2;
+%av_gain = @(v);
+
+a_max = 1;
+kp_d = 0.14;
 ki_d = 0;
-kd_d = 0.01;
+kd_d = 14;
 e_dis_sum = 0;
 e_dis_past = 0;
 kp_v = 3000;
@@ -79,8 +81,9 @@ for t = 0:SIM_STEP:T_LENGTH
     theta_arc = b_theta(id_v) - b_theta(id_v-1);
     v_d = sqrt(a_max*arc/abs(theta_arc));
     if(v_d > 40)
-        v_d = 40;
+        v_d = 20;
     end
+    v_d = 15;
     v_d_log = [v_d_log;v_d];
     e_v = v_d - x(2);
     
@@ -143,7 +146,7 @@ for t = 0:SIM_STEP:T_LENGTH
     %d_max_debug = max(c)
 end
 
-figure;
-hold on
-plot(x_log(2,:)');
-plot(v_d_log);
+%figure;
+%hold on
+%plot(x_log(2,:)');
+%plot(v_d_log);
