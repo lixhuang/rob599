@@ -11,18 +11,18 @@ b_theta = TestTrack.theta;
 T_STEP = 0.1;
 SIM_STEP = 0.01;
 C_STEP = 0.2;
-T_LENGTH = 70;
-HORIZON_STEP = 50;
+T_LENGTH = 8;
+HORIZON = 2;
 
-a_max = 10;
-kp_d = 10;
+a_max = 2;
+kp_d = 0.2;
 ki_d = 0;
-kd_d = 0;
+kd_d = 0.01;
 e_dis_sum = 0;
 e_dis_past = 0;
-kp_v = 100;
+kp_v = 3000;
 ki_v = 0;
-kd_v = 0;
+kd_v = 100;
 e_v_sum = 0;
 e_v_past = 0;
 
@@ -46,6 +46,7 @@ id = 2;
 
 x_log = [];
 u_log = [];
+v_d_log = [];
 
 for t = 0:SIM_STEP:T_LENGTH
     
@@ -55,8 +56,17 @@ for t = 0:SIM_STEP:T_LENGTH
     %x0 = x;
         
     %% find the error
+    s = 0;
+    increment = 0;
+    for i = 1:40
+        v = bc(:,id+i) - bc(:,id+i-1);
+        s = s + sqrt(sum(v.^2));
+        if(s < x(2)*HORIZON)
+            increment = i;
+        end
+    end
     id_d = id;
-    id_v = id;
+    id_v = id+increment;
     
     v1 = bc(:,id_d) - bc(:,id_d-1);
     v2 = [x(1);x(3)] - bc(:,id_d-1);
@@ -68,6 +78,10 @@ for t = 0:SIM_STEP:T_LENGTH
     arc = sqrt(sum((bc(:,id_v) - bc(:,id_v-1)).^2));
     theta_arc = b_theta(id_v) - b_theta(id_v-1);
     v_d = sqrt(a_max*arc/abs(theta_arc));
+    if(v_d > 40)
+        v_d = 40;
+    end
+    v_d_log = [v_d_log;v_d];
     e_v = v_d - x(2);
     
     %% controller
@@ -129,7 +143,7 @@ for t = 0:SIM_STEP:T_LENGTH
     %d_max_debug = max(c)
 end
 
-plot(x_log(1,:),x_log(3,:));
-plot(br(1,:),br(2,:),'k');
-plot(bl(1,:),bl(2,:),'k');
-plot(bc(1,:),bc(2,:),'b');
+figure;
+hold on
+plot(x_log(2,:)');
+plot(v_d_log);
