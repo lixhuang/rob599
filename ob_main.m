@@ -14,17 +14,17 @@ C_STEP = 0.2;
 T_LENGTH = 25;
 HORIZON = 2;
 
-%av_gain = @(v);
+av_gain = @(v) v*1.5;
 
 a_max = 1;
-kp_d = 0.14;
+kp_d = 0.2;
 ki_d = 0;
-kd_d = 14;
+kd_d = 20;
 e_dis_sum = 0;
 e_dis_past = 0;
-kp_v = 3000;
-ki_v = 0;
-kd_v = 100;
+kp_v = 500;
+ki_v = 0.05;
+kd_v = 2000;
 e_v_sum = 0;
 e_v_past = 0;
 
@@ -80,10 +80,10 @@ for t = 0:SIM_STEP:T_LENGTH
     arc = sqrt(sum((bc(:,id_v) - bc(:,id_v-1)).^2));
     theta_arc = b_theta(id_v) - b_theta(id_v-1);
     v_d = sqrt(a_max*arc/abs(theta_arc));
-    if(v_d > 40)
+    if(v_d > 20)
         v_d = 20;
     end
-    v_d = 15;
+    %v_d = 15;
     v_d_log = [v_d_log;v_d];
     e_v = v_d - x(2);
     
@@ -146,7 +146,7 @@ for t = 0:SIM_STEP:T_LENGTH
     %d_max_debug = max(c)
 end
 
-%figure;
-%hold on
-%plot(x_log(2,:)');
-%plot(v_d_log);
+figure;
+hold on
+plot(x_log(2,:)');
+plot(v_d_log);
